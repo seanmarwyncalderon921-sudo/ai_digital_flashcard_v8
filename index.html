@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SAPC AI Academic Reviewer | San Antonio de Padua College</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=20261029-v27" />
+  <!-- Confetti Canvas Library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Document Parsers (PDF.js & JSZip for PPTX) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body class="light-theme auth-active">
+
+  <!-- STANDALONE LOGIN PAGE VIEW -->
+  <section id="auth-screen" class="auth-page">
+    <div class="auth-panel">
+      <div class="auth-brand">
+        <img src="logo.jpg" alt="SAPC Logo" class="auth-logo" onerror="this.src='https://sapc.edu.ph/favicon.ico'; this.onerror=null;" />
+        <h2>San Antonio de Padua College</h2>
+      </div>
+      
+      <p class="auth-eyebrow">Student Portal</p>
+      <h1 id="auth-title">Welcome Paduan</h1>
+      <p class="auth-intro">Sign in to access your AI flashcard reviewer workspace.</p>
+
+      <form id="auth-form" class="auth-form" method="POST" action="#">
+        <input 
+          type="text" 
+          id="auth-username" 
+          name="username"
+          placeholder="Username or Email" 
+          autocomplete="username"
+          required 
+        />
+        
+        <div class="password-wrapper">
+          <input 
+            type="password" 
+            id="auth-password" 
+            name="password"
+            placeholder="Password" 
+            autocomplete="current-password"
+            required 
+          />
+          <button type="button" id="toggle-password-btn" class="toggle-password-btn" title="Show password" aria-label="Show password">👁️</button>
+        </div>
+
+        <p id="auth-password-hint" class="auth-password-hint hidden">
+          Must be at least 8 chars with 1 uppercase, 1 lowercase, 1 number, and 1 special character (!@#$%^&*).
+        </p>
+
+        <p id="auth-error" class="auth-error hidden" role="alert"></p>
+
+        <div class="auth-actions">
+          <button type="submit" id="auth-submit-btn" class="primary-btn">Log In</button>
+          <button type="button" id="auth-switch-btn" class="ghost">Register</button>
+        </div>
+      </form>
+
+      <div class="auth-divider">
+        <span>OR</span>
+      </div>
+
+      <div id="g_id_onload"
+           data-client_id="831508871993-j7egn200ai4uvbqabkuka6s66juaikes.apps.googleusercontent.com"
+           data-callback="handleGoogleSignIn"
+           data-auto_prompt="false">
+      </div>
+      <div class="g_id_signin"
+           data-type="standard"
+           data-shape="rectangular"
+           data-theme="outline"
+           data-text="sign_in_with"
+           data-size="large"
+           data-logo_alignment="left">
+      </div>
+    </div>
+  </section>
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand" id="nav-brand-btn" style="cursor: pointer;">
+        <img src="logo.jpg" alt="San Antonio de Padua College Logo" class="logo" onerror="this.src='https://sapc.edu.ph/favicon.ico'; this.onerror=null;" />
+        <div class="brand-text">
+          <span class="school">San Antonio de Padua College</span>
+          <span class="app-title">AI Academic Reviewer</span>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <div id="user-profile" class="user-profile hidden">
+          <img id="user-avatar-img" class="user-avatar-img hidden" alt="Google Profile Picture" />
+          <span class="user-avatar" id="user-avatar">P</span>
+          <span id="user-name-display" class="user-name">Paduan</span>
+          <button id="logout-btn" class="logout-btn" type="button" title="Log Out">Log Out</button>
+        </div>
+
+        <button id="nav-launch-btn" class="nav-accent-btn">Launch Reviewer →</button>
+        <button id="theme-toggle" class="icon-btn" title="Toggle Theme" aria-label="Toggle Theme">
+          <span id="theme-label" class="btn-text">Dark</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- PAGE 1: PRIMARY LANDING WEBPAGE VIEW -->
+  <div id="landing-view" class="landing-container">
+    <section class="hero-section">
+      <div class="hero-badge">
+        <span class="badge-dot"></span> Official A.I. Driven Academic Tool That Generates Flashcards for Senior High School Students.
+      </div>
+      <h1 class="hero-title">Magandang araw! <span class="text-gradient">Paduans</span></h1>
+      <p class="hero-subtitle">
+        Transform your lesson notes, LDS, Concept Notes, Personal Notes, PDFs, PPTXs, and review materials into interactive flashcard decks powered by high-speed AI. Built for Senior High School Paduans.
+      </p>
+
+      <div class="hero-cta-group">
+        <button id="hero-start-btn" class="cta-primary-btn">
+          <span>Start Reviewing Now</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12" 5 19 12 12 19"></polyline></svg>
+        </button>
+        <a href="#features-anchor" class="cta-secondary-btn">Explore Features</a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-num">SHS</span>
+          <span class="stat-label">Grade 11 & 12 Tiers</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-num">5 Strands</span>
+          <span class="stat-label">STEM, ABM, HUMSS & TVL</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-num">Instant</span>
+          <span class="stat-label">Flashcard Generation</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="features-section" id="features-anchor">
+      <div class="section-header">
+        <h2>Designed for Smarter Studying</h2>
+        <p>Everything you need to master your subjects before exams or quizzes.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <h3>AI Flashcard Generation</h3>
+          <p>Paste notes, upload PDFs, PPTXs, or image snapshots of your reviewer to instantly generate tailored cards.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>Track-Specific Content</h3>
+          <p>Customized generation tuned specifically for STEM, ABM, HUMSS, TVL-ICT, and TVL-HE academic strands.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>Full Deck Customization</h3>
+          <p>Manually create, edit, or remove cards to tailor your study deck exactly to your preference.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- PAGE 2: APPLICATION WORKSPACE VIEW -->
+  <main id="app-view" class="dashboard-layout hidden">
+    <div class="left-column">
+      <section class="panel main-content">
+        <div class="panel-header">
+          <div>
+            <h2>Study Material</h2>
+            <p class="sub">Select subject mode, then paste module text or upload files (Images, PDF, PPTX).</p>
+          </div>
+        </div>
+
+        <div class="subject-switcher-container">
+          <label class="subject-label">Subject Mode:</label>
+          <div class="subject-mode-group" id="subject-mode-container">
+            <button type="button" class="subject-btn active" data-subject="general">
+              <span>General Subjects</span>
+            </button>
+            <button type="button" class="subject-btn" data-subject="math">
+              <span>Mathematics</span>
+            </button>
+            <button type="button" class="subject-btn" data-subject="filipino">
+              <span>Filipino</span>
+            </button>
+          </div>
+        </div>
+
+        <textarea id="notes" placeholder="Paste notes or drop files below (supports images, PDF, PPTX, TXT)."></textarea>
+
+        <div id="image-previews" class="image-previews hidden" aria-label="Selected file previews"></div>
+        
+        <!-- TOOLBAR & CONTROLS -->
+        <div class="toolbar-container">
+          <!-- Row 1: File Upload & Status -->
+          <div class="upload-row">
+            <label for="image" id="upload-drop-zone" class="upload-btn drop-zone" role="button" tabindex="0" aria-label="Drop files here or choose files">
+              <span>Drop files here (Images, PDF, PPTX) or choose files</span>
+            </label>
+            <input 
+              type="file" 
+              id="image" 
+              accept="image/*,.pdf,.pptx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation" 
+              multiple 
+              style="display: none;" 
+            />
+            <span id="file-name" class="file-status" aria-live="polite">No files selected</span>
+          </div>
+
+          <!-- Row 2: Aligned Options Grid -->
+          <div class="controls-row">
+            <div class="control-item">
+              <label for="voice-select">Voice</label>
+              <select id="voice-select">
+                <option value="">Auto / Default</option>
+              </select>
+            </div>
+
+            <div class="control-item">
+              <label for="count">Cards</label>
+              <select id="count">
+                <option>5</option><option selected>10</option><option>15</option><option>20</option>
+                <option>25</option><option>30</option><option>35</option><option>40</option><option>45</option><option>50</option>
+              </select>
+            </div>
+
+            <div class="control-item">
+              <label for="difficulty">Difficulty</label>
+              <select id="difficulty">
+                <option value="easy">Easy</option>
+                <option value="medium" selected>Medium</option>
+                <option value="hard">Hard</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Row 3: Action Buttons -->
+          <div class="actions-row" style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+            <button id="generate" class="primary-btn generate-btn">Generate Flashcards</button>
+            <label for="import-file-input" class="secondary-btn custom-card-btn" style="cursor: pointer; display: inline-flex; align-items: center; justify-content: center; text-align: center; background: var(--paper); color: var(--primary); border: 1.5px solid var(--line); border-radius: 10px; font-weight: 600; font-size: 0.9rem; height: 42px;">Import JSON</label>
+            <input type="file" id="import-file-input" accept=".json,application/json" class="hidden" />
+            <button id="main-export-btn" class="secondary-btn custom-card-btn">Export JSON</button>
+            <button id="manual-add-btn" class="secondary-btn custom-card-btn">+ Custom Card</button>
+          </div>
+
+          <!-- Progress / Loading Bar -->
+          <div id="generation-loading-container" class="loading-container hidden">
+            <div class="loading-bar-track">
+              <div id="generation-progress-bar" class="loading-bar-fill"></div>
+            </div>
+            <p id="loading-text" class="loading-status-text">Analyzing material & generating flashcards...</p>
+          </div>
+
+          <p id="status"></p>
+        </div>
+      </section>
+
+      <section id="study" class="panel hidden">
+        <div class="study-header">
+          <div class="meta">
+            <span id="counter">Card 0 of 0</span>
+            <span id="live-score-pill" class="score-pill">Score: 0 / 0</span>
+            <div class="progress"><span id="bar"></span></div>
+          </div>
+          <button id="fullscreen-toggle" class="fullscreen-toggle" type="button" aria-pressed="false">Fullscreen</button>
+          <details id="card-actions" class="card-actions">
+            <summary>Card options</summary>
+            <div class="card-actions-menu">
+              <button id="edit-card-btn" class="compact-btn" type="button">Edit card</button>
+              <button id="delete-card-btn" class="compact-btn danger" type="button">Delete card</button>
+              <button id="clear-all-cards-btn" class="compact-btn danger" type="button">Delete all cards</button>
+            </div>
+          </details>
+        </div>
+
+        <!-- FLASHCARD AREA -->
+        <div class="card" id="card">
+          <div class="card-inner">
+            <div class="face front" id="front"></div>
+            <div class="face back" id="back"></div>
+          </div>
+        </div>
+        <div id="typed-answer-entry" class="typed-answer-entry hidden"></div>
+
+        <!-- RESULTS SUMMARY DASHBOARD -->
+        <div id="quiz-summary" class="quiz-summary hidden">
+          <div class="summary-badge">🎉 Deck Complete!</div>
+          <h2 class="summary-title">Session Results</h2>
+          <div class="summary-score-ring">
+            <span id="summary-percentage" class="score-percent">0%</span>
+            <span id="summary-score-text" class="score-subtext">0 of 0 Correct</span>
+          </div>
+          <p id="summary-message" class="summary-message">Great effort studying! Keep practicing to master all topics.</p>
+          <div class="summary-actions">
+            <button id="restart-deck-btn" class="primary-btn">Restart Review</button>
+          </div>
+        </div>
+
+        <p id="hint-text" class="hint">Click card or press <kbd>Space</kbd> to flip · <kbd>←</kbd> <kbd>→</kbd> to navigate</p>
+
+        <div id="study-controls" class="controls">
+          <button class="ghost" id="prev">← Prev</button>
+          <button class="ghost" id="shuffle">Shuffle</button>
+          <button id="next" class="primary-btn">Next →</button>
+        </div>
+      </section>
+    </div>
+
+    <aside class="sidebar-panel">
+      <div class="side-card">
+        <h3>Grade Level</h3>
+        <p class="side-sub">Select student deployment tier:</p>
+        <div class="selection-grid" id="grade-container">
+          <button type="button" class="selector-badge active" data-value="Grade 11" aria-pressed="true">Grade 11</button>
+          <button type="button" class="selector-badge" data-value="Grade 12" aria-pressed="false">Grade 12</button>
+        </div>
+      </div>
+
+      <div class="side-card">
+        <h3 id="strand-section-header">Grade 11 Section</h3>
+        <p class="side-sub" id="strand-section-sub">Select class section focus:</p>
+        <div class="selection-grid" id="strand-container"></div>
+        <p id="selection-summary" class="selection-summary" aria-live="polite">
+          Generating for Grade 11 / Excellence (General)
+        </p>
+      </div>
+
+      <div class="side-card info-card">
+        <h3>Reviewer Tips</h3>
+        <ul class="guide-list">
+          <li>Select high-quality voices like Microsoft Natural or Google voices from the toolbar dropdown.</li>
+          <li>Click <kbd>⏪</kbd> to rewind narration to the start, or <kbd>🔊</kbd> to pause and resume.</li>
+          <li>Press <kbd>Space</kbd> to flip cards and arrow keys to navigate.</li>
+        </ul>
+      </div>
+
+      <div class="side-card info-card">
+        <h3>Supported File Types</h3>
+        <ul class="guide-list">
+          <li>Images: PNG, JPG, JPEG, GIF</li>
+          <li>Documents: PDF, PPTX, TXT</li>
+        </ul>
+      </div>
+
+      <div class="side-card info-card">
+        <h3>Text-to-Speech Narration</h3>
+        <ul class="guide-list">
+          <li>Text-to-speech narration is supported for all uploaded content types.</li>
+          <li>Click the <kbd>voice</kbd> dropdown to select a preferred voice for text-to-speech narration.</li>
+          <li>Narration and text-to-speech features are supported for all uploaded content types.</li>
+          <li>Click the <kbd>⏪</kbd> button to rewind narration to the start, or <kbd>🔊</kbd> to pause and resume.</li>
+        </ul>
+      </div>
+
+      <div class="side-card info-card">
+        <h3>How to Save and Import Flashcards</h3>
+        <ul class="guide-list">
+          <li>Click <kbd>Export JSON</kbd> to download your flashcards as a JSON file.</li>
+          <li>Click <kbd>Import JSON</kbd> and select a saved JSON file to restore flashcards.</li>
+        </ul>
+      </div>
+    </aside>
+  </main>
+
+  <!-- MODAL DIALOG: FLASHCARD CREATOR / EDITOR -->
+  <div id="card-modal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title">Create Flashcard</h3>
+        <button id="close-modal-btn" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <label for="modal-card-type">Card type:</label>
+        <select id="modal-card-type">
+          <option value="identification">Identification</option>
+          <option value="multiple-choice">Multiple choice</option>
+          <option value="enumeration">Enumeration</option>
+          <option value="true-false">True or false</option>
+        </select>
+
+        <label for="modal-question">Question / Definition Prompt:</label>
+        <textarea id="modal-question" rows="4" placeholder="Enter question or definition prompt..."></textarea>
+
+        <div class="custom-card-fields" data-card-type="identification">
+          <label for="modal-answer">Answer / Correct Term:</label>
+          <textarea id="modal-answer" rows="2" placeholder="Enter exact answer (1 to 3 words)..."></textarea>
+          <label for="modal-id-explanation">Explanation (optional):</label>
+          <textarea id="modal-id-explanation" rows="2" placeholder="Explain this term or concept..."></textarea>
+        </div>
+
+        <div class="custom-card-fields" data-card-type="multiple-choice">
+          <div class="custom-choice-grid">
+            <label for="modal-option-a">Option A<input id="modal-option-a" type="text" /></label>
+            <label for="modal-option-b">Option B<input id="modal-option-b" type="text" /></label>
+            <label for="modal-option-c">Option C<input id="modal-option-c" type="text" /></label>
+            <label for="modal-option-d">Option D<input id="modal-option-d" type="text" /></label>
+          </div>
+          <label for="modal-correct-option">Correct option:</label>
+          <select id="modal-correct-option">
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+          </select>
+          <label for="modal-mc-explanation">Explanation (optional):</label>
+          <textarea id="modal-mc-explanation" rows="3" placeholder="Explain why this option is correct..."></textarea>
+        </div>
+
+        <div class="custom-card-fields" data-card-type="enumeration">
+          <label for="modal-enumeration-answer">Expected items, one per line:</label>
+          <textarea id="modal-enumeration-answer" rows="4" placeholder="Enter one expected item per line"></textarea>
+        </div>
+
+        <div class="custom-card-fields" data-card-type="true-false">
+          <label for="modal-true-false-answer">Correct answer:</label>
+          <select id="modal-true-false-answer">
+            <option value="True">True / Tama</option>
+            <option value="False">False / Mali</option>
+          </select>
+          <label for="modal-explanation">Explanation (optional):</label>
+          <textarea id="modal-explanation" rows="3" placeholder="Explain why this statement is true/false or tama/mali..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="cancel-modal-btn" class="ghost">Cancel</button>
+        <button id="save-card-btn" class="primary-btn">Save Flashcard</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js?v=20261029-v27"></script>
+</body>
+</html>
